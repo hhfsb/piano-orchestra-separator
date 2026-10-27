@@ -25,7 +25,7 @@ h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:#8f97a1;ma
 audio{width:100%;margin-top:10px}
 /* model cards */
 .models{display:grid;gap:9px}
-@media (min-width:560px){.models{grid-template-columns:1fr 1fr}}
+@media (min-width:700px){.models{grid-template-columns:1fr 1fr 1fr}}
 .m{border:1px solid #2c313b;border-radius:10px;padding:11px 12px;cursor:pointer;display:block;
    background:#1b1f26}
 @media (prefers-color-scheme:light){.m{background:#fafbfc;border-color:#e0e4ea}}
@@ -74,13 +74,19 @@ ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
   <div class="models">
     <label class="m on"><input type="radio" name="model" value="student" checked>
       <b>Student</b> <span class="hint">&middot; 4.1 MB</span>
-      <div class="d">2-layer LSTM, 1.9 M params per stem. Fastest &mdash; roughly 2x faster
-      than realtime on a desktop.</div></label>
+      <div class="d">2-layer LSTM, 1.9 M params per stem.<br>
+      <b>3.50 dB</b> SI-SDR &mdash; fastest.</div></label>
+    <label class="m"><input type="radio" name="model" value="hdmc-student">
+      <b>HDMC student</b> <span class="hint">&middot; 4.2 MB</span>
+      <div class="d">Same size, distilled from the much stronger HDMC teacher.<br>
+      <b>3.52 dB</b> SI-SDR &mdash; the better teacher bought 0.02 dB.</div></label>
     <label class="m"><input type="radio" name="model" value="umx">
-      <b>UMX20 edge</b> <span class="hint">&middot; 15.4 MB</span>
-      <div class="d">3-layer LSTM, 7.3 M params. Higher quality, but slower &mdash; may run
-      slower than realtime.</div></label>
+      <b>UMX20 edge</b> <span class="hint">&middot; 15.3 MB</span>
+      <div class="d">3-layer LSTM, 7.3 M params per stem.<br>
+      <b>3.83 dB</b> SI-SDR &mdash; best quality, slower than realtime.</div></label>
   </div>
+  <div class="hint" style="margin-top:10px">SI-SDR measured on 16 held-out piano-concerto
+  excerpts against ground-truth stems. Higher is better.</div>
 </div>
 
 <div class="card">
@@ -115,10 +121,11 @@ ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
 <div class="card">
   <h2>What is running</h2>
   <ul>
-    <li>int8 student model, embedded as compact weights with per-channel scales.</li>
+    <li>Three int8 models, loaded on demand &mdash; only the one you pick is downloaded.</li>
     <li>STFT, inverse STFT, ratio masking and 6 s overlap-add, all in plain JavaScript.</li>
     <li>No WebAssembly, no SIMD, no GPU &mdash; a deliberate worst case for speed.</li>
-    <li>Models load on first use of that model only.</li>
+    <li>The HDMC <i>teacher</i> (334 MB) is not here: it is a different architecture
+        (conv + transformer hybrid) and would need a separate JavaScript engine.</li>
   </ul>
 </div>
 </div>

@@ -10,12 +10,15 @@ network calls, no uploads. Everything (model weights, DSP, UI) is inside a singl
 
 * Pick a **start / end time** and process only that part of the track.
 * **Listen to the original** before running anything.
-* Choose between two models:
+* Choose between three models:
 
-  | model | size | params / stem | speed (desktop) |
-  |---|---:|---|---|
-  | **Student** | 4.1 MB | 1.9 M, 2-layer LSTM | ~2× faster than realtime |
-  | **UMX20 edge** | 15.4 MB | 7.3 M, 3-layer LSTM | ~0.7× realtime |
+  | model | size | params / stem | SI-SDR | speed (desktop) |
+  |---|---:|---|---:|---|
+  | **Student** (UMX20 teacher) | 4.1 MB | 1.9 M, 2-layer LSTM | 3.50 dB | ~2× faster than realtime |
+  | **HDMC student** | 4.2 MB | 2.0 M, 2-layer LSTM | 3.52 dB | ~2× faster than realtime |
+  | **UMX20 edge** | 15.3 MB | 7.3 M, 3-layer LSTM | 3.83 dB | ~0.7× realtime |
+
+  SI-SDR is measured on 16 held-out piano-concerto excerpts against ground-truth stems.
 
 * **Progress bar** during processing.
 * Models load lazily — the page shell is ~1 MB; a model script is fetched only when you pick it.
@@ -44,6 +47,8 @@ Verified headlessly in Node against the Python reference model:
 |---|---|---:|
 | Student | piano | 55.5 / 57.1 dB (L/R) |
 | Student | orchestra | 50.7 / 54.2 dB |
+| HDMC student | piano | 53.3 / 55.0 dB |
+| HDMC student | orchestra | 55.6 / 59.8 dB |
 | UMX20 edge | piano | 59.6 / 61.3 dB |
 | UMX20 edge | orchestra | 47.1 / 51.8 dB |
 
