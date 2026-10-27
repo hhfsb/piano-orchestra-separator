@@ -25,7 +25,7 @@ h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:#8f97a1;ma
 audio{width:100%;margin-top:10px}
 /* model cards */
 .models{display:grid;gap:9px}
-@media (min-width:700px){.models{grid-template-columns:1fr 1fr 1fr}}
+@media (min-width:640px){.models{grid-template-columns:1fr 1fr}}
 .m{border:1px solid #2c313b;border-radius:10px;padding:11px 12px;cursor:pointer;display:block;
    background:#1b1f26}
 @media (prefers-color-scheme:light){.m{background:#fafbfc;border-color:#e0e4ea}}
@@ -53,6 +53,15 @@ table.kv td:last-child{text-align:right;font-weight:600}
 .track{margin-bottom:12px}
 .track .lbl{font-size:12px;color:#8f97a1;margin-bottom:2px}
 ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
+table.mx{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+table.mx th,table.mx td{padding:7px 8px;border-bottom:1px solid #23272f;text-align:left;
+  vertical-align:top;color:#e8eaed}
+table.mx th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8f97a1;
+  font-weight:600}
+table.mx td:first-child{color:#c7ccd4;font-weight:500;white-space:nowrap}
+@media (prefers-color-scheme:light){table.mx th,table.mx td{border-color:#eceef2;color:#15171c}}
+.yes{color:#4fae7a;font-size:11px;font-weight:600}
+.no{color:#7d848d;font-size:11px}
 </style></head>
 <body><div class="wrap">
 <h1>Piano / orchestra separator</h1>
@@ -74,7 +83,7 @@ ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
   <div class="models">
     <label class="m on"><input type="radio" name="model" value="student" checked>
       <b>Student</b> <span class="hint">&middot; 4.1 MB</span>
-      <div class="d">2-layer LSTM, 1.9 M params per stem.<br>
+      <div class="d">2-layer LSTM, 1.9 M params per stem, distilled from UMX20.<br>
       <b>3.50 dB</b> SI-SDR &mdash; fastest.</div></label>
     <label class="m"><input type="radio" name="model" value="hdmc-student">
       <b>HDMC student</b> <span class="hint">&middot; 4.2 MB</span>
@@ -82,8 +91,12 @@ ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
       <b>3.52 dB</b> SI-SDR &mdash; the better teacher bought 0.02 dB.</div></label>
     <label class="m"><input type="radio" name="model" value="umx">
       <b>UMX20 edge</b> <span class="hint">&middot; 15.3 MB</span>
-      <div class="d">3-layer LSTM, 7.3 M params per stem.<br>
-      <b>3.83 dB</b> SI-SDR &mdash; best quality, slower than realtime.</div></label>
+      <div class="d">3-layer LSTM, 7.3 M params per stem, dead rows pruned.<br>
+      <b>3.83 dB</b> SI-SDR &mdash; best quality.</div></label>
+    <label class="m"><input type="radio" name="model" value="umx-base">
+      <b>UMX20 base</b> <span class="hint">&middot; 16.6 MB</span>
+      <div class="d">Unpruned, 8.3 M params per stem. <b>Sounds identical</b> to UMX20 edge
+      &mdash; pruning is exact. Included only to show the size difference.</div></label>
   </div>
   <div class="hint" style="margin-top:10px">SI-SDR measured on 16 held-out piano-concerto
   excerpts against ground-truth stems. Higher is better.</div>
@@ -116,6 +129,34 @@ ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
     <tr><td>Range processed</td><td id="r-range">-</td></tr>
     <tr><td>Device</td><td id="r-dev">-</td></tr>
   </table>
+</div>
+
+<div class="card">
+  <h2>All combinations (measured)</h2>
+  <table class="mx">
+    <thead><tr><th>build</th><th>UMX20</th><th>HDMC</th></tr></thead>
+    <tbody>
+      <tr><td>base (fp32)</td><td>71.2 MB &middot; 3.78 dB</td>
+          <td>334.7 MB &middot; 5.30 dB</td></tr>
+      <tr><td>+ int8</td><td>18.0 MB &middot; 3.83 dB<br><span class="yes">UMX20 base</span></td>
+          <td>84.6 MB &middot; 5.28 dB<br><span class="no">not runnable here</span></td></tr>
+      <tr><td>+ pruned + int8</td><td>15.3 MB &middot; 3.83 dB<br><span class="yes">UMX20 edge</span></td>
+          <td><span class="no">nothing to prune</span></td></tr>
+      <tr><td>student</td><td>15.7 MB &middot; 3.50 dB<br><span class="yes">Student</span></td>
+          <td>15.9 MB &middot; 3.52 dB<br><span class="yes">HDMC student</span></td></tr>
+      <tr><td>student + int8</td><td>4.1 MB &middot; 3.50 dB<br><span class="yes">Student</span></td>
+          <td>4.2 MB &middot; 3.52 dB<br><span class="yes">HDMC student</span></td></tr>
+      <tr><td>student + pruned + int8</td><td><span class="no">same build as above</span></td>
+          <td><span class="no">same build as above</span></td></tr>
+    </tbody>
+  </table>
+  <div class="hint" style="margin-top:9px">
+    SI-SDR on 16 held-out excerpts. <b>Why the gaps:</b> the engine ships int8 weights only, so
+    fp32 builds are listed for reference but not downloadable. HDMC is a conv + transformer
+    hybrid &mdash; a different architecture that would need its own JavaScript engine, and 84 MB
+    even at int8. And HDMC has <b>zero</b> subnormal weights and zero dead rows, so the pruning
+    that saves 15 % on UMX20 has nothing to remove there.
+  </div>
 </div>
 
 <div class="card">
