@@ -4,7 +4,21 @@ A piano / orchestra source separator that runs **entirely in the browser** — n
 network calls, no uploads. Everything (model weights, DSP, UI) is inside a single
 `index.html`.
 
-**Live demo:** `https://<your-username>.github.io/piano-orchestra-separator/`
+**Live demo:** <https://hhfsb.github.io/piano-orchestra-separator/>
+
+## Features
+
+* Pick a **start / end time** and process only that part of the track.
+* **Listen to the original** before running anything.
+* Choose between two models:
+
+  | model | size | params / stem | speed (desktop) |
+  |---|---:|---|---|
+  | **Student** | 4.1 MB | 1.9 M, 2-layer LSTM | ~2× faster than realtime |
+  | **UMX20 edge** | 15.4 MB | 7.3 M, 3-layer LSTM | ~0.7× realtime |
+
+* **Progress bar** during processing.
+* Models load lazily — the page shell is ~1 MB; a model script is fetched only when you pick it.
 
 ## What it does
 
@@ -26,16 +40,18 @@ browser, using an int8-quantised neural network implemented in plain JavaScript.
 
 Verified headlessly in Node against the Python reference model:
 
-| stem | SI-SDR vs Python |
-|---|---:|
-| piano | 55.5 / 57.1 dB (L/R) |
-| orchestra | 50.7 / 54.2 dB (L/R) |
+| model | stem | SI-SDR vs Python |
+|---|---|---:|
+| Student | piano | 55.5 / 57.1 dB (L/R) |
+| Student | orchestra | 50.7 / 54.2 dB |
+| UMX20 edge | piano | 59.6 / 61.3 dB |
+| UMX20 edge | orchestra | 47.1 / 51.8 dB |
 
 Those differences are 16-bit WAV quantisation, not algorithmic.
 
-Speed on a desktop CPU: **RTF ≈ 0.5** (12 s of audio in ~6 s). RTF below 1.0 is faster than
-realtime. A phone is typically 3–6× slower on this kind of float loop, so expect RTF ≈ 1.5–3 —
-usable as a batch job, not as realtime processing.
+Speed on a desktop CPU: **RTF ≈ 0.52** for the student model (12 s of audio in ~6 s), **RTF ≈ 1.49**
+for UMX20 edge. RTF below 1.0 is faster than realtime. A phone is typically 3–6× slower on this
+kind of float loop.
 
 ## Running locally
 
