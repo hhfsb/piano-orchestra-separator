@@ -54,12 +54,15 @@ table.kv td:last-child{text-align:right;font-weight:600}
 .track .lbl{font-size:12px;color:#8f97a1;margin-bottom:2px}
 ul{margin:5px 0 0 17px;padding:0}li{margin:2px 0;font-size:13px;color:#9aa2ac}
 table.mx{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
-table.mx th,table.mx td{padding:7px 8px;border-bottom:1px solid #23272f;text-align:left;
+table.mx th,table.mx td{padding:7px 7px;border-bottom:1px solid #23272f;text-align:left;
   vertical-align:top;color:#e8eaed}
 table.mx th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8f97a1;
   font-weight:600}
-table.mx td:first-child{color:#c7ccd4;font-weight:500;white-space:nowrap}
-@media (prefers-color-scheme:light){table.mx th,table.mx td{border-color:#eceef2;color:#15171c}}
+table.mx td:first-child{color:#c7ccd4;font-weight:500}
+table.mx td.n{text-align:right;white-space:nowrap}
+table.mx tr.grp2 th{background:#1e222a;padding-top:5px;padding-bottom:5px}
+@media (prefers-color-scheme:light){table.mx th,table.mx td{border-color:#eceef2;color:#15171c}
+  table.mx tr.grp2 th{background:#f0f2f6}}
 .yes{color:#4fae7a;font-size:11px;font-weight:600}
 .no{color:#7d848d;font-size:11px}
 </style></head>
@@ -123,6 +126,8 @@ table.mx td:first-child{color:#c7ccd4;font-weight:500;white-space:nowrap}
   <div class="track"><div class="lbl">Piano</div><audio id="ap" controls preload="metadata"></audio></div>
   <div class="track"><div class="lbl">Orchestra</div><audio id="ao" controls preload="metadata"></audio></div>
   <table class="kv">
+    <tr><td>Model</td><td id="r-model">-</td></tr>
+    <tr><td>Model size</td><td id="r-size">-</td></tr>
     <tr><td>Realtime factor</td><td id="r-rtf">-</td></tr>
     <tr><td>Speed</td><td id="r-speed">-</td></tr>
     <tr><td>Compute time</td><td id="r-secs">-</td></tr>
@@ -134,28 +139,41 @@ table.mx td:first-child{color:#c7ccd4;font-weight:500;white-space:nowrap}
 <div class="card">
   <h2>All combinations (measured)</h2>
   <table class="mx">
-    <thead><tr><th>build</th><th>UMX20</th><th>HDMC</th></tr></thead>
+    <thead>
+      <tr><th>build</th><th colspan="2" style="text-align:center">UMX20</th>
+          <th colspan="2" style="text-align:center">HDMC</th></tr>
+      <tr class="grp2"><th></th><th style="text-align:right">size</th>
+          <th style="text-align:right">SI-SDR</th><th style="text-align:right">size</th>
+          <th style="text-align:right">SI-SDR</th></tr>
+    </thead>
     <tbody>
-      <tr><td>base (fp32)</td><td>71.2 MB &middot; 3.78 dB</td>
-          <td>334.7 MB &middot; 5.30 dB</td></tr>
-      <tr><td>+ int8</td><td>18.0 MB &middot; 3.83 dB<br><span class="yes">UMX20 base</span></td>
-          <td>84.6 MB &middot; 5.28 dB<br><span class="no">not runnable here</span></td></tr>
-      <tr><td>+ pruned + int8</td><td>15.3 MB &middot; 3.83 dB<br><span class="yes">UMX20 edge</span></td>
-          <td><span class="no">nothing to prune</span></td></tr>
-      <tr><td>student</td><td>15.7 MB &middot; 3.50 dB<br><span class="yes">Student</span></td>
-          <td>15.9 MB &middot; 3.52 dB<br><span class="yes">HDMC student</span></td></tr>
-      <tr><td>student + int8</td><td>4.1 MB &middot; 3.50 dB<br><span class="yes">Student</span></td>
-          <td>4.2 MB &middot; 3.52 dB<br><span class="yes">HDMC student</span></td></tr>
-      <tr><td>student + pruned + int8</td><td><span class="no">same build as above</span></td>
-          <td><span class="no">same build as above</span></td></tr>
+      <tr><td>base (fp32)</td><td class="n">71.2 MB</td><td class="n">3.78</td>
+          <td class="n">334.7 MB</td><td class="n">5.30</td></tr>
+      <tr><td>+ int8<br><span class="yes">UMX20 base</span></td>
+          <td class="n">18.0 MB</td><td class="n">3.83</td>
+          <td class="n">84.6 MB</td><td class="n">5.28</td></tr>
+      <tr><td>+ pruned + int8<br><span class="yes">UMX20 edge</span></td>
+          <td class="n">15.3 MB</td><td class="n">3.83</td>
+          <td class="n">&mdash;</td><td class="n"><span class="no">none</span></td></tr>
+      <tr><td>student<br><span class="yes">Student · HDMC student</span></td>
+          <td class="n">15.7 MB</td><td class="n">3.50</td>
+          <td class="n">15.9 MB</td><td class="n">3.52</td></tr>
+      <tr><td>student + int8<br><span class="yes">Student · HDMC student</span></td>
+          <td class="n">4.1 MB</td><td class="n">3.50</td>
+          <td class="n">4.2 MB</td><td class="n">3.52</td></tr>
+      <tr><td>student + pruned + int8</td>
+          <td class="n">4.1 MB</td><td class="n">3.50</td>
+          <td class="n">4.2 MB</td><td class="n">3.52</td></tr>
     </tbody>
   </table>
   <div class="hint" style="margin-top:9px">
-    SI-SDR on 16 held-out excerpts. <b>Why the gaps:</b> the engine ships int8 weights only, so
-    fp32 builds are listed for reference but not downloadable. HDMC is a conv + transformer
-    hybrid &mdash; a different architecture that would need its own JavaScript engine, and 84 MB
-    even at int8. And HDMC has <b>zero</b> subnormal weights and zero dead rows, so the pruning
-    that saves 15 % on UMX20 has nothing to remove there.
+    Sizes are the model weights for <b>both stems</b>; the browser download is ~1.33&times; larger
+    because weights ship as base64. SI-SDR on 16 held-out excerpts.
+    <br><br><b>Why the gaps:</b> the engine ships int8 weights only, so fp32 builds are listed for
+    reference but not downloadable. HDMC is a conv + transformer hybrid &mdash; a different
+    architecture that would need its own JavaScript engine, and 84 MB even at int8. And HDMC has
+    <b>zero</b> subnormal weights and zero dead rows, so the pruning that saves 15 % on UMX20 has
+    nothing to remove there.
   </div>
 </div>
 
@@ -553,6 +571,12 @@ table.mx td:first-child{color:#c7ccd4;font-weight:500;white-space:nowrap}
 const $ = (id) => document.getElementById(id);
 let audio = null, dur = 0;
 const seps = {};      // model name -> Separator
+const MODELS = {
+  'student':      {label:'Student (UMX20 teacher)', weights:'4.1 MB', download:'5.4 MB'},
+  'hdmc-student': {label:'HDMC student',            weights:'4.2 MB', download:'5.5 MB'},
+  'umx':          {label:'UMX20 edge (pruned)',     weights:'15.3 MB', download:'20.4 MB'},
+  'umx-base':     {label:'UMX20 base (unpruned)',   weights:'16.6 MB', download:'22.6 MB'},
+};
 
 function b64buf(b64){const b=atob(b64),n=b.length,u=new Uint8Array(n);
   for(let i=0;i<n;i++)u[i]=b.charCodeAt(i);return u.buffer;}
@@ -659,6 +683,8 @@ $('go').onclick = async () => {
 
   $('ap').src = URL.createObjectURL(wavBlob(out.pianoL,out.pianoR,44100));
   $('ao').src = URL.createObjectURL(wavBlob(out.orchL,out.orchR,44100));
+  $('r-model').textContent = MODELS[name].label;
+  $('r-size').textContent = MODELS[name].weights + ' (' + MODELS[name].download + ' download)';
   $('r-rtf').textContent = rtf.toFixed(2);
   $('r-speed').textContent = rtf<1 ? (1/rtf).toFixed(1)+'x faster than realtime'
                                    : rtf.toFixed(1)+'x slower than realtime';
