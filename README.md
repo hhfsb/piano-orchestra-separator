@@ -1,8 +1,9 @@
 # piano-orchestra-separator
 
 A piano / orchestra source separator that runs **entirely in the browser** — no server, no
-network calls, no uploads. Everything (model weights, DSP, UI) is inside a single
-`index.html`.
+network calls, no uploads. The shell is a single `index.html` (~32 KB); the model weights
+(`models/*.js`) and the built-in demo clip (`demo.js`) are fetched only when you first need
+them.
 
 **Live demo:** <https://hhfsb.github.io/piano-orchestra-separator/>
 
@@ -10,6 +11,8 @@ network calls, no uploads. Everything (model weights, DSP, UI) is inside a singl
 
 * Pick a **start / end time** and process only that part of the track.
 * **Listen to the original** before running anything.
+* A **built-in 16 s demo clip** — Mozart, Piano Concerto No. 20 in D minor, K. 466
+  (Yutong Sun, 2022 Cliburn Competition), 20:56–21:12, mono 44.1 kHz.
 * Choose between three models:
 
   | model | size | params / stem | SI-SDR | speed (desktop) |
@@ -21,7 +24,8 @@ network calls, no uploads. Everything (model weights, DSP, UI) is inside a singl
   SI-SDR is measured on 16 held-out piano-concerto excerpts against ground-truth stems.
 
 * **Progress bar** during processing.
-* Models load lazily — the page shell is ~1 MB; a model script is fetched only when you pick it.
+* Everything loads lazily — the shell is ~32 KB; a model script is fetched only when you pick
+  it, and the demo clip only when you click "Use built-in clip".
 
 ## What it does
 
@@ -61,7 +65,8 @@ kind of float loop.
 ## Running locally
 
 Open `index.html` in any modern browser. That's it — there is no build step and no server
-required, and it works from `file://`.
+required, and it works from `file://` (the model and demo files load as `<script>` tags, not
+`fetch`, so a local folder works — keep `index.html`, `demo.js` and `models/` together).
 
 To test on a phone: copy the file to the device and open it, or serve the folder:
 
@@ -95,3 +100,10 @@ Model architecture and training data follow the original work:
 
 The upstream research code is at <https://github.com/yiitozer/pc-separation>. Check the
 licensing terms for the pretrained weights before redistributing them commercially.
+
+### Demo clip
+
+The built-in clip is a 16 s excerpt of Mozart, Piano Concerto No. 20 in D minor, K. 466,
+performed by Yutong Sun at the 2022 Cliburn Competition (20:56–21:12). It is included only
+as a short demonstration input; all rights remain with the performers and recording owners.
+Regenerate it with `edge/make_demo_sample.py` from your own copy of the recording.
