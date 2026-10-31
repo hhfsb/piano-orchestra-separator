@@ -11,8 +11,9 @@ them.
 
 * Pick a **start / end time** and process only that part of the track.
 * **Listen to the original** before running anything.
-* A **built-in 16 s demo clip** — Mozart, Piano Concerto No. 20 in D minor, K. 466
-  (Yutong Sun, 2022 Cliburn Competition), 20:56–21:12, mono 44.1 kHz.
+* A **built-in 10 s demo clip** — Mozart, Piano Concerto No. 20 in D minor, K. 466
+  (Maria João Pires, Swedish Radio Symphony Orchestra, Daniel Harding), 21:24–21:34,
+  mono 44.1 kHz.
 * Choose between three models:
 
   | model | size | params / stem | SI-SDR | speed (desktop) |
@@ -103,7 +104,8 @@ licensing terms for the pretrained weights before redistributing them commercial
 
 ### Demo clip
 
-The built-in clip is a 16 s excerpt of Mozart, Piano Concerto No. 20 in D minor, K. 466,
-performed by Yutong Sun at the 2022 Cliburn Competition (20:56–21:12). It is included only
-as a short demonstration input; all rights remain with the performers and recording owners.
-Regenerate it with `edge/make_demo_sample.py` from your own copy of the recording.
+The built-in clip is a 10 s excerpt of Mozart, Piano Concerto No. 20 in D minor, K. 466,
+performed by Maria João Pires with the Swedish Radio Symphony Orchestra under Daniel Harding
+(21:24–21:34). It is included only as a short demonstration input; all rights remain with the
+performers and recording owners. Regenerate it with `edge/make_demo_sample.py` from your own
+copy of the recording.
